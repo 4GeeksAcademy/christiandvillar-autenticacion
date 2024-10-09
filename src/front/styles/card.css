@@ -1,0 +1,53 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+.protected body {
+  background-color: black;
+}
+
+.protected .row {
+  height: 215px;
+  width: 333px;
+  background-color: #2bb5b7;
+  border-radius: 25px;
+  border: 2px solid #e92510;
+  align-items: center;
+  display: flex;
+}
+
+.protected .align-self-center {
+  align-self: center !important;
+  text-align: center;
+}
+
+.protected .align-self-end {
+  align-self: flex-end !important;
+  text-align: right;
+  transform: rotate(180deg);
+  display: flex;
+  justify-content: flex-start;
+}
+
+.protected .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.protected table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.protected th,
+.protected td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+
+.protected button {
+  margin-top: 20px;
+  background-color: grey;
+}
