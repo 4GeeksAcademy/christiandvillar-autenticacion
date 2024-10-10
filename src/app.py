@@ -23,7 +23,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # JWT configuration (add your secret key)
-app.config['JWT_SECRET_KEY'] = 'your-secret-key-here'  # Cambia 'your-secret-key-here' por una clave segura
+app.config['JWT_SECRET_KEY'] = os.getenv("JWT_TOKEN")  # Cambia 'your-secret-key-here' por una clave segura
 
 # Initialize JWTManager
 jwt = JWTManager(app)
