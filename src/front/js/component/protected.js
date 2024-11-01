@@ -18,7 +18,7 @@ const Protected = () => {
 
   useEffect(() => {
     const storedToken = sessionStorage.getItem("token");
-    console.log("Token:", storedToken ? "Token presente" : "No se encontró token");
+    
 
     // Guardar el token en el estado
     setToken(storedToken);
