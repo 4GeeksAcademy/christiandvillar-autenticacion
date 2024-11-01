@@ -4,21 +4,29 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const Protected = () => {
   const navigate = useNavigate();
+  const [token, setToken] = useState(null);
   const [cartas, setCartas] = useState({
     "♥": Array(12).fill(0),
     "♦": Array(12).fill(0),
     "♠": Array(12).fill(0),
     "♣": Array(12).fill(0),
   });
-
   const [paloMostarArriba, setPaloMostarArriba] = useState("");
   const [paloMostarAbajo, setPaloMostarAbajo] = useState("");
   const [valor, setValor] = useState("");
   const [tablaCartas, setTablaCartas] = useState(null);
 
   useEffect(() => {
-    cargarCartas();
-    generarcarta();
+    const storedToken = sessionStorage.getItem("token");
+    console.log("Token:", storedToken ? "Token presente" : "No se encontró token");
+
+    // Guardar el token en el estado
+    setToken(storedToken);
+
+    if (storedToken) {
+      cargarCartas();
+      generarcarta();
+    }
   }, []);
 
   const cargarCartas = () => {
@@ -94,8 +102,9 @@ const Protected = () => {
         <tbody>
           {Object.keys(cartas).map((palo, index) => (
             <tr key={index}>
-              {/* Cambia el color del palo si es ♥ o ♦ */}
-              <td className={palo === "♥" || palo === "♦" ? "text-danger" : ""}>{palo}</td>
+              <td className={palo === "♥" || palo === "♦" ? "text-danger" : ""}>
+                {palo}
+              </td>
               {cartas[palo].map((cantidad, i) => (
                 <td key={i}>{cantidad}</td>
               ))}
@@ -108,19 +117,27 @@ const Protected = () => {
     setTablaCartas(tabla);
   };
 
-  // Función para manejar el cierre de sesión
   const handleLogout = () => {
-    // Eliminar el token de sessionStorage
     sessionStorage.removeItem("token");
-
-    // Redirigir a la página de inicio pública
     navigate("/");
   };
+
+  // Mostrar error 404 si el token no está presente
+  if (!token) {
+    return (
+      <div className="container text-center mt-5">
+        <h1>Error 404</h1>
+        <p>Página no encontrada o acceso denegado.</p>
+        <button className="btn btn-primary mt-4" onClick={() => navigate("/")}>
+          Ir a Iniciar Sesión
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-4">
       <div className="card text-center bg-white">
-        {/* Símbolo arriba a la izquierda */}
         <div className="card-header d-flex justify-content-start">
           <h3>
             <span
@@ -133,8 +150,6 @@ const Protected = () => {
             </span>
           </h3>
         </div>
-
-        {/* Valor (negro para ♠ y ♣, rojo para ♥ y ♦) */}
         <div className="card-body">
           <h1
             id="valor"
@@ -145,10 +160,8 @@ const Protected = () => {
             {valor}
           </h1>
         </div>
-
-        {/* Símbolo y valor abajo a la derecha con rotación 180° */}
         <div className="card-footer d-flex justify-content-end">
-          <h3 style={{ transform: "rotate(180deg)" }}> {/* Rotación 180° */}
+          <h3 style={{ transform: "rotate(180deg)" }}>
             <span
               id="mostarAbajo"
               className={`${
@@ -165,7 +178,6 @@ const Protected = () => {
         Cambiar Carta
       </button>
 
-      {/* Botón de cierre de sesión */}
       <button className="btn btn-secondary mt-4" onClick={handleLogout}>
         Cerrar sesión
       </button>

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom"; // Cambiamos useHistory por useNavigate para redirigir
+import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 
@@ -16,7 +16,7 @@ export const Home = () => {
   // Función para manejar el inicio de sesión
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null); // Limpiar el error antes de la solicitud
+    setError(null);
 
     try {
       const response = await fetch(`${BACKEND_URL}/login`, {
@@ -35,7 +35,7 @@ export const Home = () => {
         throw new Error(data.msg || "Error en las credenciales");
       }
 
-      localStorage.setItem("token", data.access_token);
+      sessionStorage.setItem("token", data.access_token); // Almacenar el token en sessionStorage
       navigate("/protected"); // Redirigir al área protegida
     } catch (err) {
       setError(err.message);
@@ -46,30 +46,30 @@ export const Home = () => {
   // Función para manejar el registro de usuarios
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError(null);  // Limpiar el error antes de la solicitud
+    setError(null);
 
     try {
-        const response = await fetch(`${BACKEND_URL}/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,    // Utiliza el estado email
-                password: password,  // Utiliza el estado password
-            }),
-        });
+      const response = await fetch(`${BACKEND_URL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
 
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.msg || "Error en el registro");
-        }
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.msg || "Error en el registro");
+      }
 
-        alert("Registro exitoso. Por favor, inicia sesión.");
-        setIsRegister(false);  // Volver al formulario de inicio de sesión después de registrarse
+      alert("Registro exitoso. Por favor, inicia sesión.");
+      setIsRegister(false); // Volver al formulario de inicio de sesión
     } catch (err) {
-        setError(err.message);
-        console.error("Error al registrarse", err);
+      setError(err.message);
+      console.error("Error al registrarse", err);
     }
   };
 

@@ -71,38 +71,38 @@ def sitemap():
 # Registration route
 @app.route('/register', methods=['POST'])
 def register():
-    body = request.get_json(silent=True)
+    try:
+        body = request.get_json(silent=True)
 
-    if body is None:
-        return jsonify({'msg': 'Fields cannot be left empty'}), 400
+        if body is None:
+            return jsonify({'msg': 'Fields cannot be left empty'}), 400
 
-    email = body.get('email')
-    password = body.get('password')
+        email = body.get('email')
+        password = body.get('password')
 
-    if not email:
-        return jsonify({'msg': 'The email field cannot be empty'}), 400
-    if not password:
-        return jsonify({'msg': 'The password field cannot be empty'}), 400
+        if not email:
+            return jsonify({'msg': 'The email field cannot be empty'}), 400
+        if not password:
+            return jsonify({'msg': 'The password field cannot be empty'}), 400
 
-    # Check if user exists
-    user = User.query.filter_by(email=email).first()
-    if user:
-        return jsonify({"msg": "The user already exists"}), 400
+        user = User.query.filter_by(email=email).first()
+        if user:
+            return jsonify({"msg": "The user already exists"}), 400
 
-    # Create new user with hashed password
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(email=email, password=hashed_password, is_active=True)
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        new_user = User(email=email, password=hashed_password, is_active=True)
 
-    db.session.add(new_user)
-    db.session.commit()
+        db.session.add(new_user)
+        db.session.commit()
 
-    # Create access token
-    access_token = create_access_token(identity=new_user.id)
-    return jsonify({
-        "msg": "Usuario registrado con éxito",
-        "access_token": access_token
-    }), 200
+        access_token = create_access_token(identity=new_user.id)
+        return jsonify({
+            "msg": "Usuario registrado con éxito",
+            "access_token": access_token
+        }), 200
 
+    except Exception as e:
+        return jsonify({"msg": "An error occurred", "error": str(e)}), 500
 # Login route
 @app.route('/login', methods=['POST'])
 def login():
